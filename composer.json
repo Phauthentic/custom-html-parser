@@ -1,0 +1,48 @@
+{
+  "name": "phauthentic/custom-html",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "Florian Krämer",
+      "email": "florian.kraemer@kreative-design.net"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^8.3"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Phauthentic\\CustomHtml\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Phauthentic\\CustomHtml\\Test\\": "tests\\TestCase"
+    }
+  },
+  "scripts": {
+    "test": [
+      ".\\bin\\phpunit"
+    ],
+    "cscheck": [
+      ".\\bin\\phpcs .\\src .\\tests"
+    ],
+    "csfix": [
+      ".\\bin\\phpcbf .\\src .\\tests"
+    ],
+    "analyze": [
+      ".\\bin\\phpstan analyse -l 1 -c phpstan.neon .\\src\\"
+    ]
+  },
+  "config": {
+    "bin-dir": "bin",
+    "sort-packages": true,
+    "prestissimo": {
+      "maxConnections": 12,
+      "minConnections": 6
+    }
+  }
+}
