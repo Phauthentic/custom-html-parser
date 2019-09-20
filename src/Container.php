@@ -1,45 +1,41 @@
 <?php
+declare(strict_types = 1);
+
 namespace Phauthentic\CustomHtml;
 
-class Container {
+use DOMElement;
 
-	public function __construct() {
-	}
+/**
+ * Container
+ */
+class Container extends AbstractElement
+{
+    /**
+     *
+     */
+    public static function create()
+    {
+        return new self();
+    }
 
-	public static function create() {
-		return new self();
-	}
+    /**
+     *
+     */
+    public function __invoke(DOMElement $oldElement)
+    {
+        $newElement = $this->createNewElement($oldElement, 'div');
+        $this->copyAttributes($oldElement, $newElement, ['fluid']);
 
-	public function __invoke($oldTag) {
-		$document = $oldTag->ownerDocument;
+        if ($oldElement->hasAttribute('fluid')) {
+            $class = 'container-fluid';
+        } else {
+            $class = 'container';
+        }
 
-		/**
-		 * @var $oldTag \DOMElement
-		 */
-		if ($oldTag->hasAttribute('fluid')) {
-			$class = 'container-fluid';
-		} else {
-			$class = 'container';
-		}
+        if ($newElement->hasAttribute('class')) {
+            $class .= $newElement->getAttribute('class');
+        }
 
-		$newTag = $document->createElement('div');
-		$oldTag->parentNode->replaceChild($newTag, $oldTag);
-
-		foreach ($oldTag->attributes as $attribute) {
-			if ($attribute->name === 'fluid') {
-				continue;
-			}
-
-			$newTag->setAttribute($attribute->name, $attribute->value);
-		}
-
-		foreach (iterator_to_array($oldTag->childNodes) as $child) {
-			$newTag->appendChild($oldTag->removeChild($child));
-		}
-
-		/**
-		 * @var $newTag \DOMElement
-		 */
-		$newTag->setAttribute('class', $class);
-	}
+        $newElement->setAttribute('class', $class);
+    }
 }

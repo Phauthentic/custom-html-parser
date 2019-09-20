@@ -1,31 +1,54 @@
 <?php
+declare(strict_types = 1);
+
 namespace Phauthentic\CustomHtml;
 
-class RenameTag {
+use DOMElement;
 
-	protected $newTagName = 'div';
+/**
+ * Rename Tag
+ */
+class RenameTag
+{
+    /**
+     * @var string
+     */
+    protected $newElementName = 'div';
 
-	public function __construct() {
-	}
+    /**
+     *
+     */
+    public function __construct()
+    {
+    }
 
-	public static function create($newTagName) {
-		$self = new self();
-		$self->newTagName = $newTagName;
+    /**
+     *
+     */
+    public static function create(string $newElementName)
+    {
+        $self = new self();
+        $self->newTagName = $newElementName;
 
-		return $self;
-	}
+        return $self;
+    }
 
-	public function __invoke($oldTag) {
-		$document = $oldTag->ownerDocument;
+    /**
+     *
+     */
+    public function __invoke(DOMElement $oldElement)
+    {
+        $document = $oldElement->ownerDocument;
 
-		$newTag = $document->createElement($this->newTagName);
-		$oldTag->parentNode->replaceChild($newTag, $oldTag);
+        $newElement = $document->createElement($this->newTagName);
+        $oldElement->parentNode->replaceChild($newElement, $oldElement);
 
-		foreach ($oldTag->attributes as $attribute) {
-			$newTag->setAttribute($attribute->name, $attribute->value);
-		}
-		foreach (iterator_to_array($oldTag->childNodes) as $child) {
-			$newTag->appendChild($oldTag->removeChild($child));
-		}
-	}
+        foreach ($oldElement->attributes as $attribute) {
+            $newElement->setAttribute($attribute->name, $attribute->value);
+        }
+
+        foreach (iterator_to_array($oldElement->childNodes) as $child) {
+            $newElement->appendChild($oldElement->removeChild($child));
+        }
+    }
 }

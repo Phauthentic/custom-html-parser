@@ -1,38 +1,35 @@
 <?php
+declare(strict_types = 1);
+
 require_once '../vendor/autoload.php';
 
-$html = '<html>
-	<container>
-		<col>
-			<p>
-				<test attribute="test" attribute2="this">test<br />content with other tags</test>
-			</p>
-		</col>
-		<col>
-			test col
-		</col>
-	</container>
-	<container fluid="true"><test>dsdshsh</test></container>
-</html>';
+use Phauthentic\CustomHtml\Parser;
 
-$parser = new \Phauthentic\CustomHtml\DomParser($html);
+$html = file_get_contents('../tests/Fixture/test.html');
+
+$parser = new Parser();
 
 $parser->addTag('test', \Phauthentic\CustomHtml\RenameTag::create('othertag'));
 $parser->addTag('container', \Phauthentic\CustomHtml\Container::create());
+$parser->addTag('bsinput', \Phauthentic\CustomHtml\FragmentTag::create());
+$parser->addTag('var', \Phauthentic\CustomHtml\VarTag::create([
+    'test' => 'hello!',
+    'test2' => 'Hello after!'
+]));
 $parser->addTag('col', function($oldTag) {
-	$document = $oldTag->ownerDocument;
+    $document = $oldTag->ownerDocument;
 
-	$newTag = $document->createElement('div');
-	$oldTag->parentNode->replaceChild($newTag, $oldTag);
+    $newTag = $document->createElement('div');
+    $oldTag->parentNode->replaceChild($newTag, $oldTag);
 
-	foreach (iterator_to_array($oldTag->childNodes) as $child) {
-		$newTag->appendChild($oldTag->removeChild($child));
-	}
+    foreach (iterator_to_array($oldTag->childNodes) as $child) {
+        $newTag->appendChild($oldTag->removeChild($child));
+    }
 
-	/**
-	 * @var $newTag \DOMElement
-	 */
-	$newTag->setAttribute('class', 'col');
+    /**
+     * @var $newTag \DOMElement
+     */
+    $newTag->setAttribute('class', 'col');
 });
 
-echo $parser->replace();
+echo $parser->parse($html);
