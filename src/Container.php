@@ -21,7 +21,7 @@ class Container extends AbstractElement
     /**
      *
      */
-    public function __invoke(DOMElement $oldElement)
+    public function __invoke(DOMElement $oldElement): void
     {
         $newElement = $this->createNewElement($oldElement, 'div');
         $this->copyAttributes($oldElement, $newElement, ['fluid']);

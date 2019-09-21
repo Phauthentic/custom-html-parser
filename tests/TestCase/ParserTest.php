@@ -1,10 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace Phauthentic\CustomHtml;
+namespace Phauthentic\CustomHtml\Test\TestCase;
 
-use DOMDocument;
-use DOMXPath;
+use Phauthentic\CustomHtml\Parser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,5 +11,13 @@ use PHPUnit\Framework\TestCase;
  */
 class ParserTest extends TestCase
 {
-
+    /**
+     * @return void
+     */
+    public function testParse(): void
+    {
+        $html = file_get_contents('tests/Fixture/test.html');
+        $parser = new Parser();
+        $result = $parser->parse($html);
+    }
 }

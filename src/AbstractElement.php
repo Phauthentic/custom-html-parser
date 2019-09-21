@@ -8,7 +8,7 @@ use DOMElement;
 /**
  * Abstract Element
  */
-abstract class AbstractElement
+abstract class AbstractElement implements ElementInterface
 {
     /**
      * Invoke
@@ -16,7 +16,22 @@ abstract class AbstractElement
      * @param  \DOMElement $element
      * @return void
      */
-    public abstract function __invoke(DOMElement $element);
+    public abstract function __invoke(DOMElement $element): void;
+
+    /**
+     * Injects a piece of HTML to the DOM
+     *
+     * @param \DOMElement $oldElement Element
+     * @param string $html Html to inject
+     * @return \DOMDocumentFragment
+     */
+    protected function createFragment(DOMElement $oldElement, string $html)
+    {
+        $fragment = $oldElement->ownerDocument->createDocumentFragment();
+        $fragment->appendXML($html);
+
+        return $fragment;
+    }
 
     /**
      * Creates a new element based on the old one with the new name
@@ -32,7 +47,7 @@ abstract class AbstractElement
          * @var $newElement \DOMElement
          */
         $document = $existingElement->ownerDocument;
-        $newElement = $document->createElement('div');
+        $newElement = $document->createElement($name);
         $existingElement->parentNode->replaceChild($newElement, $existingElement);
 
         foreach (iterator_to_array($existingElement->childNodes) as $child) {
@@ -48,12 +63,11 @@ abstract class AbstractElement
      * @param  \DOMElement $existingElement    Old Tag
      * @param  \DOMElement $newElement         New Tag
      * @param  array       $excludedAttributes Exclude these attributes
-     * @return \DOMElement
      */
-    protected function copyAttributes(DOMElement $existingElement, DOMElement $newElement, array $excludedAttributes = [])
+    protected function copyAttributes(DOMElement $existingElement, DOMElement $newElement, array $excludedAttributes = []): void
     {
         foreach ($existingElement->attributes as $attribute) {
-            if (in_array($attribute->name, $excludedAttributes)) {
+            if (in_array((string)$attribute->name, $excludedAttributes)) {
                 continue;
             }
 
@@ -62,7 +76,10 @@ abstract class AbstractElement
     }
 
     /**
+     * Gets all CSS classes from an element
      *
+     * @param \DOMElement $element Element
+     * @return array
      */
     public function getCssClasses(DOMElement $element): array
     {
@@ -72,9 +89,13 @@ abstract class AbstractElement
     }
 
     /**
+     * Checks if an element has a CSS class
      *
+     * @param \DOMElement $element Element
+     * @param string $class Class
+     * @return void
      */
-    public function hasCssClass(DOMElement $element, $class)
+    public function hasCssClass(DOMElement $element, $class): bool
     {
         $classes = $this->getCssClasses($element);
 
@@ -82,9 +103,13 @@ abstract class AbstractElement
     }
 
     /**
+     * Adds a CSS class to an element
      *
+     * @param \DOMElement $element Element
+     * @param string $class Class
+     * @return void
      */
-    public function addCssClass(DOMElement $element, $class)
+    public function addCssClass(DOMElement $element, $class): void
     {
         if ($this->hasCssClass($element, $class)) {
             return;
@@ -98,9 +123,12 @@ abstract class AbstractElement
     }
 
     /**
+     * Removes a CSS class from an element
      *
+     * @param \DOMElement $element Element
+     * @param string $class Class
      */
-    public function removeCssClass(DOMElement $element, $class)
+    public function removeCssClass(DOMElement $element, $class): void
     {
         if (!$this->hasCssClass($element, $class)) {
             return;

@@ -17,6 +17,11 @@ class Parser
     protected $tags = [];
 
     /**
+     * @var bool
+     */
+    protected $noLibXmlError = true;
+
+    /**
      * @var array $tags Tags
      */
     public function __construct(array $tags = [])
@@ -46,7 +51,12 @@ class Parser
     public function parse(string $html): string
     {
         $document = new DOMDocument();
-        $document->loadXML($html);
+        if ($this->noLibXmlError) {
+            $document->loadHTML($html, LIBXML_NOERROR);
+        } else {
+            $document->loadHTML($html);
+        }
+
         $xpath = new DOMXPath($document);
 
         foreach ($this->tags as $name => $callable) {

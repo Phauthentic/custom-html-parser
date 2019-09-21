@@ -10,12 +10,12 @@ use DOMElement;
  */
 class VarTag
 {
+    use ArrayDotAccessTrait;
+
     /**
      * @var array
      */
-    protected $vars = [
-        'test' => 'Hello world!'
-    ];
+    protected $vars = [];
 
     /**
      * Create
@@ -69,24 +69,5 @@ class VarTag
             $document->createTextNode((string)$value),
             $oldTag
         );
-    }
-
-    /**
-     *
-     */
-    protected function dotAccess(array $a, $path, $default = null)
-    {
-        $current = $a;
-        $p = strtok($path, '.');
-
-        while ($p !== false) {
-            if (!isset($current[$p])) {
-                return $default;
-            }
-            $current = $current[$p];
-            $p = strtok('.');
-        }
-
-        return $current;
     }
 }

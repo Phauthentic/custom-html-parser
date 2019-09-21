@@ -11,7 +11,7 @@ $parser = new Parser();
 
 $parser->addTag('test', \Phauthentic\CustomHtml\RenameTag::create('othertag'));
 $parser->addTag('container', \Phauthentic\CustomHtml\Container::create());
-$parser->addTag('bsinput', \Phauthentic\CustomHtml\FragmentTag::create());
+$parser->addTag('bs-input', \Phauthentic\CustomHtml\FragmentTag::create());
 $parser->addTag('var', \Phauthentic\CustomHtml\VarTag::create([
     'test' => 'hello!',
     'test2' => 'Hello after!'

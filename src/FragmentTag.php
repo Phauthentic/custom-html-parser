@@ -23,11 +23,9 @@ class FragmentTag extends AbstractElement
     /**
      *
      */
-    public function __invoke(DOMElement $oldElement)
+    public function __invoke(DOMElement $oldElement): void
     {
-        $fragment = $oldElement->ownerDocument->createDocumentFragment();
-        $fragment->appendXML($this->template);
-
+        $fragment = $this->createFragment($oldElement, $this->template);
         $oldElement->parentNode->replaceChild($fragment, $oldElement);
     }
 }
